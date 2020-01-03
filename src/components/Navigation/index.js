@@ -5,7 +5,7 @@ import Home from '../Home';
 import Login from '../Login';
 import Register from '../Register';
 import Preffered from '../Preffered';
-
+import ShopDetail from '../ShopDetail';
 
 const MyRoutes = () => (
     <Switch>
@@ -13,6 +13,7 @@ const MyRoutes = () => (
         <Route exact path="/login" component={Login}></Route>
         <Route exact path="/register" component={Register}></Route>
         <Route exact path="/preffered" component={Preffered}></Route>
+        <Route exact path="/shop/:placeId" component={ShopDetail}></Route>
     </Switch>
 )
 

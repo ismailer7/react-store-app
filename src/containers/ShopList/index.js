@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
-
+import { Link } from 'react-router-dom';
 import Loading from '../../components/Loading'
 
 const SingleShop = (props) => (
-    <li>
-        {props.shop.name}
-    </li>
+    
+    <Link to={`/shop/${props.shop.place_id}`}>
+        <li>
+            {props.shop.name}
+        </li>
+    </Link>
+    
 )
 
 class ShopList extends Component {
@@ -22,6 +26,7 @@ class ShopList extends Component {
         fetch('http://localhost:8080/places')
         .then(response => response.json())
         .then(json => {
+            console.log(json)
             this.setState({
                 isFetching: false,
                 shops: json['results']

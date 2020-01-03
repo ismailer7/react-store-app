@@ -6,7 +6,7 @@ class Loading extends Component {
     render() {
         return (
             <div>
-                <img src={LoadingGif} />
+                <img alt="loading" src={LoadingGif} />
             </div>
         )
     }
