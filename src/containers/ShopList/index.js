@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import Loading from '../../components/Loading'
 
 const SingleShop = (props) => (
     <li>
@@ -37,7 +38,7 @@ class ShopList extends Component {
                 {
                     isFetching
                     &&
-                    <p>Loading...</p>
+                   <Loading />
                 }
 
                 {
