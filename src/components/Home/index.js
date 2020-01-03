@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-
+import ShopList from '../../containers/ShopList';
 
 class Home extends Component {
 
@@ -7,8 +7,9 @@ class Home extends Component {
         return (
             <div>
                 <h1>
-                    Home Page!
+                   Near by Shop!
                 </h1>
+                <ShopList />
             </div>
         )
     }
