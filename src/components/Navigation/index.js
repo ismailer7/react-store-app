@@ -6,6 +6,8 @@ import Login from '../Login';
 import Register from '../Register';
 import Preffered from '../Preffered';
 import ShopDetail from '../ShopDetail';
+import HomeLogo from './static/home_icon.png';
+
 
 const MyRoutes = () => (
     <Switch>
@@ -22,7 +24,11 @@ class Navigation extends Component {
         return (
               <Router>
                 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                    <a class="navbar-brand"><Link to={'/'}>LOGO</Link></a>
+                    <a class="navbar-brand">
+                        <Link to={'/'}>
+                            <img src={HomeLogo} width={'50px'} height={'50px'}/>
+                        </Link>
+                    </a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>

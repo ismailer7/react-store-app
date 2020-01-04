@@ -3,13 +3,17 @@ import ShopList from '../../containers/ShopList';
 
 class Home extends Component {
 
+    state = {
+        isAuthenticate: false
+    }
+
     render() {
         return (
             <div>
                 <h1>
                    Near by Shop!
                 </h1>
-                <ShopList />
+                <ShopList auth={this.state.isAuthenticate}/>
             </div>
         )
     }

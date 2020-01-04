@@ -7,7 +7,7 @@ class Preffered extends Component {
         return (
             <div>
                 <h1>
-                   Preffered List paeg!
+                   Preffered List page!
                 </h1>
             </div>
         )
