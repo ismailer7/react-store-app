@@ -74,11 +74,19 @@ class ShopList extends Component {
     } */
 
     addToPrefferedList = (shopId) => {
-       if(!this.props.auth) {
+        console.log('add to preffered list!')
+        fetch('http://localhost:8080/preffered/insert/')
+        .then(response => response.json())
+        .then(json => console.log(json))
+        .catch(err => {
+            console.log(err)
+            this.props.history.push('/login')
+        })
+       /* if(!this.props.auth) {
            this.props.history.push('/login')
        } else {
            console.log('proceeed to next page')
-       }
+       } */
     }
 
     render() {

@@ -7,6 +7,10 @@ class Home extends Component {
         isAuthenticate: false
     }
 
+    componentDidMount() {
+        // check if user is authenticate first
+    }
+
     render() {
         return (
             <div>
