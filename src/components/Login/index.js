@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import './static/index.css';
+import { Redirect } from "react-router-dom";
 
 class Login extends Component {
 
@@ -7,13 +8,14 @@ class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            userId: -1,
             username: '',
             password: '',
-            errorMessage: '',
-            isAuth: false
+            isAuth: false,
+            authorization: ''
         };
     
-        this.handleChangeEmail = this.handleChangeEmail.bind(this);
+        this.handleChangeUsername = this.handleChangeUsername.bind(this);
         this.handleChangePassword = this.handleChangePassword.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
       }
@@ -36,25 +38,63 @@ class Login extends Component {
             body: JSON.stringify({
                 "username": this.state.username,
                 "password": this.state.password
-                })
+            })
           })
           .then(response => {
                 if(response.status !== 200) {
-                    return this.setState({errorMessage: response.text()})
+                    return response.text()
                 } else {
-                    this.setState({errorMessage: ''})
                     return response.json()
                 }
           })
-          .then(data => console.log(data))
+          .then(data => {
+              if(typeof(data) !== 'string') {
+                const encode = new Buffer(this.state.username + ':' + this.state.password).toString('base64');
+                this.setState({
+                    userId: data['id'],
+                    username: data['username'],
+                    password: data['password'],
+                    errorMessage: '',
+                    isAuth: true,
+                    authorization: 'Basic ' + encode
+                })
+              } else {
+                this.setState({
+                    userId: -1,
+                    errorMessage: data,
+                    isAuth: false,
+                    authorization: ''
+                })
+              }
+          })
           .catch(err => console.error(err))
       }
-    
+
+      renderRedirectToHomePage = () => {
+        if (this.state.isAuth) {
+            const userId = this.state.userId
+            const auth = this.state.authorization
+            console.log("while redirect", userId)
+            return <Redirect 
+                    to = {{
+                        pathname: '/',
+                        credentials: {
+                            id: userId,
+                            authorization: auth,
+                            isAuth: this.state.isAuth
+                        }
+                    }}
+                />
+        }
+      }
 
     render() {
         const errorMsg = this.state.errorMessage
+        
         return (
+            
             <div class="login-container">
+                {this.renderRedirectToHomePage()}
                 <div class="login-form-1">
                     <h3>Please sign in</h3>
                     <form onSubmit={this.handleSubmit}>

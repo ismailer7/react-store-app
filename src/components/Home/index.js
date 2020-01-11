@@ -4,7 +4,8 @@ import ShopList from '../../containers/ShopList';
 class Home extends Component {
 
     state = {
-        isAuthenticate: false
+        isAuth: false,
+        authoriization: ''
     }
 
     componentDidMount() {
@@ -12,12 +13,15 @@ class Home extends Component {
     }
 
     render() {
+        const isAuth = this.state.isAuth
         return (
             <div>
                 <h1>
                    Near by Shop!
                 </h1>
-                <ShopList auth={this.state.isAuthenticate}/>
+                <h2>
+                </h2>
+                <ShopList auth={this.props.location.credentials}/>  
             </div>
         )
     }

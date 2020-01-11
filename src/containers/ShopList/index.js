@@ -17,6 +17,7 @@ class ShopList extends Component {
     state = {
         shops: [],
         isFetching: false,
+        isAuthenticate: false
     }
 
     static contextTypes = {
@@ -24,7 +25,8 @@ class ShopList extends Component {
     }
 
     componentDidMount() {
-        console.log("Authenticate state: ", this.props.auth)
+        //console.log('store list component : ', this.props)
+
         this.setState({
             isFetching: true
         })
@@ -74,13 +76,25 @@ class ShopList extends Component {
     } */
 
     addToPrefferedList = (shopId) => {
-        console.log('add to preffered list!')
-        fetch('http://localhost:8080/preffered/insert/')
-        .then(response => response.json())
-        .then(json => console.log(json))
+        const authorization = this.props.auth ?  this.props.auth.authorization : ''
+        fetch('http://localhost:8080/something', { // this need to be authorized
+            headers: new Headers({
+                'Content-Type': 'application/json',
+                'Authorization': authorization
+            })
+        })
+        .then(response => {
+                if(response.status !== 200) {
+                    // unauthorized proceed to login page.
+                    this.props.history.push('/login')
+                } else {
+                    return response.text()
+                }
+            }
+        )
+        .then(text => console.log(text))
         .catch(err => {
             console.log(err)
-            this.props.history.push('/login')
         })
        /* if(!this.props.auth) {
            this.props.history.push('/login')
