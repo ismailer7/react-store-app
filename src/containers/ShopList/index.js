@@ -75,13 +75,18 @@ class ShopList extends Component {
         }
     } */
 
-    addToPrefferedList = (shopId) => {
+    addToPrefferedList = (shop) => {
         const authorization = this.props.auth ?  this.props.auth.authorization : ''
-        fetch('http://localhost:8080/something', { // this need to be authorized
+        const userId = this.props.auth ?  this.props.auth.id : -1
+        console.log("shop", shop)
+        console.log("add to preffered list: ", this.props.auth)
+        fetch(`http://localhost:8080/add/store?id=${userId}`, { // this need to be authorized
+            method: 'POST',
             headers: new Headers({
                 'Content-Type': 'application/json',
                 'Authorization': authorization
-            })
+            }),
+            body: JSON.stringify(shop)
         })
         .then(response => {
                 if(response.status !== 200) {
@@ -123,7 +128,7 @@ class ShopList extends Component {
                                     return (
                                         <div>
                                             <SingleShop shop={shop} key={shop.id}/>
-                                            <button onClick={() => this.addToPrefferedList(shop.id)}>add</button><button onClick={() => this.removeFromNearBy(shop.id)}>remove</button>
+                                            <button onClick={() => this.addToPrefferedList(shop)}>add</button><button onClick={() => this.removeFromNearBy(shop.id)}>remove</button>
                                         </div>
                                     )
                                     
