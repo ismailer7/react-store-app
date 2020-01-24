@@ -38,7 +38,6 @@ class ShopDetail extends Component {
                 {
                     !isFetching 
                     &&
-
                     <div>
                         <h1>
                             Shop Detail page!
@@ -54,13 +53,8 @@ class ShopDetail extends Component {
                                {types.map( (type, index) => <li key={index}>{type}</li>)}
                             </ul>
                         }
-
                     </div>
-
-                }
-
-
-                
+                }    
             </div>
         )
     }

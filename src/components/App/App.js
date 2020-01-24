@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import Footer from '../Footer';
 
 import Navigation from '../Navigation';
 
@@ -11,6 +12,7 @@ class App extends Component {
     return (
       <div>
         <Navigation />
+        <Footer />
       </div>
     )
   }

@@ -26,7 +26,6 @@ class ShopList extends Component {
 
     componentDidMount() {
         //console.log('store list component : ', this.props)
-
         this.setState({
             isFetching: true
         })
@@ -50,24 +49,6 @@ class ShopList extends Component {
     removeFromNearBy = (shopId) => {
        console.log(shopId)
     } */
-
-    fetchingAPI = (token) => {
-        this.setState({
-            isFetching: true
-        })
-        fetch(`http://localhost:8080/places?pageToken=${token}`)
-        .then(response => response.json())
-        .then(json => {
-            console.log(json)
-            this.setState({
-                isFetching: false,
-                shops: json['results'],
-                nextPageToken: json['next_page_token'],
-                previousPageToken:  json['previous_page_token']
-            })
-        })
-        .catch(err => console.log(err))
-    }
 
     /* checkForAuth = () => {
         if(!this.props.auth) {

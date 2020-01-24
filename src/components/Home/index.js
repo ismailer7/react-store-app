@@ -19,8 +19,6 @@ class Home extends Component {
                 <h1>
                    Near by Shop!
                 </h1>
-                <h2>
-                </h2>
                 <ShopList auth={this.props.location.credentials}/>  
             </div>
         )

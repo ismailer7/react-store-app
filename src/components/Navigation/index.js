@@ -52,7 +52,7 @@ class Navigation extends Component {
                         </ul>
                     </div>
                 </nav>
-                    <MyRoutes />
+                <MyRoutes />
               </Router>
         )
     }
