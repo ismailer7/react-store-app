@@ -8,8 +8,20 @@ class Home extends Component {
         authoriization: ''
     }
 
+    // get user position using javascript
+    getUserLocation = () => {
+        if(navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    console.log("user position : " + position.coords.latitude + " and " + position.coords.longitude)
+                }
+            )
+        }
+    }
+
     componentDidMount() {
         // check if user is authenticate first
+        this.getUserLocation()
     }
 
     render() {
