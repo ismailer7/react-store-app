@@ -60,4 +60,6 @@ class ShopDetail extends Component {
     }
 }
 
+
+
 export default ShopDetail;

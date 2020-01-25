@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import LoadingGif from './static/loading.gif'
+import './static/style.css'
 
 class Loading extends Component {
 
@@ -18,7 +19,7 @@ class Loading extends Component {
     render() {
         const isLoading = this.state.isLoading
         return (
-            <div>
+            <div className="loading">
                 {
                     isLoading
                     &&
@@ -28,7 +29,7 @@ class Loading extends Component {
                 {
                     !isLoading
                     &&
-                    <p>
+                    <p className="error">
                         Sorry the server doesn't response, please check later!
                     </p>
                 }

@@ -17,18 +17,39 @@ class ShopList extends Component {
     state = {
         shops: [],
         isFetching: false,
-        isAuthenticate: false
+        isAuthenticate: false,
+        latitude: 0,
+        longitude: 0
     }
 
     static contextTypes = {
         router: PropTypes.object
     }
 
+    getUserLocation = () => {
+        if(navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    console.log("user position : " + position.coords.latitude + " and " + position.coords.longitude)
+                    const latitude = position.coords.latitude
+                    const longitude = position.coords.longitude
+                    const isFetching = true
+                    this.setState({
+                        latitude,
+                        longitude,
+                        isFetching
+                    })
+                }
+            )
+        }
+    }
+
     componentDidMount() {
+        this.getUserLocation()
         //console.log('store list component : ', this.props)
-        this.setState({
+        /* this.setState({
             isFetching: true
-        })
+        }) */
         fetch('http://localhost:8080/places')
         .then(response => response.json())
         .then(json => {
@@ -42,18 +63,9 @@ class ShopList extends Component {
         .catch(err => console.log(err))
     }
 
-    /* addToPrefferedList = (event) => {
-        console.log('tried to add..')
-    }
-
+    /*
     removeFromNearBy = (shopId) => {
        console.log(shopId)
-    } */
-
-    /* checkForAuth = () => {
-        if(!this.props.auth) {
-            return <Redirect to='/login'  />
-        }
     } */
 
     addToPrefferedList = (shop) => {
@@ -92,7 +104,7 @@ class ShopList extends Component {
     render() {
         const {isFetching, shops} = this.state;
         return (
-            <div>
+            <div className="row">
                 {
                     isFetching
                     &&
@@ -102,7 +114,7 @@ class ShopList extends Component {
                 {
                     !isFetching
                     &&
-                    <ul>
+                    <div>
                         {
                             shops.map(
                                 shop => {
@@ -116,40 +128,9 @@ class ShopList extends Component {
                                 }
                             )
                         }
-                    </ul>
-                }
-
-               {/*  {
-                    !previousPageToken && nextPageToken
-                    &&
-                    <div>
-                        <button disabled="true"> prev </button> <button onClick={() => this.onNext(nextPageToken)}> next </button>
                     </div>
+                    
                 }
-
-                {
-                    previousPageToken && nextPageToken
-                    &&
-                    <div>
-                        <button onClick={() => this.onPrevious(previousPageToken)}> prev </button> <button onClick={() => this.onNext(nextPageToken)}> next </button>
-                    </div>
-                }
-
-                {
-                    previousPageToken && !nextPageToken
-                    &&
-                    <div>
-                        <button onClick={() => this.onPrevious(previousPageToken)}> prev </button> <button disabled="true"> next </button>
-                    </div>
-                }
-
-                {
-                    !previousPageToken && !nextPageToken
-                    &&
-                    <div>
-                        <button disabled="true"> prev </button> <button disabled="true"> next </button> 
-                    </div> 
-                } */}
             </div>
         )
     }
