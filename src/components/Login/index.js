@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import './static/index.css';
 import { Redirect } from "react-router-dom";
+import { BrowserRouter as Link} from 'react-router-dom';
 
 class Login extends Component {
 
@@ -116,7 +117,9 @@ class Login extends Component {
                             <input class="btnSubmit" type="submit" value="Sign in" />
                         </div>
                         <div class="form-group">
-                            <a href="#" class="ForgetPwd">Forget Password?</a>
+                            <Link to={'/register'} className="createAccount">
+                              Don't have an account? create one now!
+                            </Link>
                         </div>
                     </form>
                 </div>
