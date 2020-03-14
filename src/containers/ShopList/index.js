@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Loading from '../../components/Loading'
 import PropTypes from 'prop-types'
 import { withRouter } from "react-router";
@@ -18,6 +18,8 @@ class ShopList extends Component {
         shops: [],
         isFetching: false,
         isAuthenticate: false,
+        authorization: '',
+        userId: 0,
         latitude: 0,
         longitude: 0
     }
@@ -50,17 +52,63 @@ class ShopList extends Component {
         /* this.setState({
             isFetching: true
         }) */
-        fetch('http://localhost:8080/places')
-        .then(response => response.json())
-        .then(json => {
-            console.log(json)
-            console.log(json['results'].length)
+        if(this.props.auth) { // comming from redirect
+            localStorage.setItem('currentUser', this.props.auth.id)
+            localStorage.setItem('authorization', this.props.auth.authorization)
             this.setState({
-                isFetching: false,
-                shops: json['results'],
+                isAuthenticate: this.props.auth.isAuth,
+                userId: this.props.auth.id,
+                authorization: this.props.auth.authorization
             })
-        })
-        .catch(err => console.log(err))
+            console.log("is Authenticated", this.props.auth)
+            if(this.props.auth.isAuth) {
+                console.log("already authenticated.")
+            }
+            const userId = this.props.auth.id
+            fetch(`http://localhost:8090/user/getPlaces?userId=${userId}`)
+            .then(response => response.json())
+            .then(json => {
+                console.log(json)
+                console.log(json['results'].length)
+                this.setState({
+                    isFetching: false,
+                    shops: json['results'],
+                })
+            })
+            .catch(err => console.log(err))
+        } else if(localStorage.getItem('currentUser')) { // already logged in..
+            // same requets getPlaces
+            console.log("request from local storage..")
+            const userId = localStorage.getItem('currentUser')
+            console.log("user id from local storage", userId)
+            this.setState({
+                isAuthenticate: true,
+                userId: userId
+            })
+            fetch(`http://localhost:8090/user/getPlaces?userId=${userId}`)
+            .then(response => response.json())
+            .then(json => {
+                console.log(json)
+                console.log(json['results'].length)
+                this.setState({
+                    isFetching: false,
+                    shops: json['results'],
+                })
+            })
+            .catch(err => console.log(err))
+        } else { // guest
+            fetch('http://localhost:8090/places')
+            .then(response => response.json())
+            .then(json => {
+                console.log(json)
+                console.log(json['results'].length)
+                this.setState({
+                    isFetching: false,
+                    shops: json['results'],
+                })
+            })
+            .catch(err => console.log(err))
+        }
     }
 
     /*
@@ -69,19 +117,41 @@ class ShopList extends Component {
     } */
 
     addToPrefferedList = (shop) => {
-        const authorization = this.props.auth ?  this.props.auth.authorization : ''
-        const userId = this.props.auth ?  this.props.auth.id : -1
+        console.log('test')
+        this.setState({
+            isFetching: true
+        })
+        let authorization = null
+        let userId = null
+        if(this.props.auth) {
+            console.log("check", this.props.auth)
+            authorization = this.props.auth ?  this.props.auth.authorization : ''
+            userId = this.props.auth ?  this.props.auth.id : -1
+        } else if(localStorage.getItem('currentUser')) {
+            authorization = localStorage.getItem('authorization') ? localStorage.getItem('authorization') : 'Basic Og=='
+            userId = localStorage.getItem('currentUser')
+        } else {
+            userId = -1
+            authorization = 'Basic Og=='
+        }
         console.log("shop", shop)
-        console.log("add to preffered list: ", this.props.auth)
-        fetch(`http://localhost:8080/add/store?id=${userId}`, { // this need to be authorized
+        const obj = {
+            "userId": userId,
+            "storeId": shop.storeId
+        }
+        // console.log("add to preffered list: ", this.props.auth)
+        fetch('http://localhost:8090/preferred/add', { // this need to be authorized
             method: 'POST',
             headers: new Headers({
                 'Content-Type': 'application/json',
                 'Authorization': authorization
             }),
-            body: JSON.stringify(shop)
+            body: JSON.stringify(obj)
         })
         .then(response => {
+                this.setState({
+                    isFetching: false
+                })
                 if(response.status !== 200) {
                     // unauthorized proceed to login page.
                     this.props.history.push('/login')
@@ -120,7 +190,7 @@ class ShopList extends Component {
                                 shop => {
                                     return (
                                         <div>
-                                            <SingleShop shop={shop} key={shop.id}/>
+                                            <SingleShop shop={shop} key={shop.place_id}/>
                                             <button onClick={() => this.addToPrefferedList(shop)}>add</button><button onClick={() => this.removeFromNearBy(shop.id)}>remove</button>
                                         </div>
                                     )

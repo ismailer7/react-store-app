@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
-import Footer from '../Footer';
-
+import Home from '../Home';
 import Navigation from '../Navigation';
+import Footer from '../Footer';
 
 
 
@@ -12,7 +12,6 @@ class App extends Component {
     return (
       <div>
         <Navigation />
-        <Footer />
       </div>
     )
   }

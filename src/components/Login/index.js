@@ -30,7 +30,7 @@ class Login extends Component {
     
       handleSubmit(event) {
           event.preventDefault();
-          fetch('http://localhost:8080/authenticate', {
+          fetch('http://localhost:8090/authenticate', {
             method: 'POST',
             headers: new Headers({
                 'Content-Type': 'application/json'
@@ -74,7 +74,10 @@ class Login extends Component {
         if (this.state.isAuth) {
             const userId = this.state.userId
             const auth = this.state.authorization
+            const isAuth = this.state.isAuth;
             console.log("while redirect", userId)
+            console.log("while redirect", auth)
+            console.log("while redirect", isAuth) 
             return <Redirect 
                     to = {{
                         pathname: '/',
@@ -91,40 +94,44 @@ class Login extends Component {
     render() {
         const errorMsg = this.state.errorMessage
         
-        return (
+       
+            return (
             
-            <div class="login-container">
-                {this.renderRedirectToHomePage()}
-                <div class="login-form-1">
-                    <h3>Please sign in</h3>
-                    <form onSubmit={this.handleSubmit}>
-                        <div class="form-group">
-                            <input 
-                             style={{
-                                  borderColor: errorMsg ? "red" : ""
-                                }} 
-                             
-                             type="text" id="username" name="username" class="form-control" defaultValue={this.state.username} onChange={this.handleChangeUsername} placeholder="Your Username *" required autoFocus></input>
-                        </div>
-                        <div class="form-group">
-                            <input  
-                                style={{
-                                  borderColor: errorMsg ? "red" : ""
-                                }} 
-                                type="password" id="password" name="password" class="form-control" defaultValue={this.state.password} onChange={this.handleChangePassword} placeholder="Your Password *" required></input>
-                        </div>
-                        <div class="form-group">
-                            <input class="btnSubmit" type="submit" value="Sign in" />
-                        </div>
-                        <div class="form-group">
-                            <Link to={'/register'} className="createAccount">
-                              Don't have an account? create one now!
-                            </Link>
-                        </div>
-                    </form>
+                <div class="login-container">
+                    {this.renderRedirectToHomePage()}
+                    <div class="login-form-1">
+                        <h3>Please sign in</h3>
+                        <form onSubmit={this.handleSubmit}>
+                            <div class="form-group">
+                                <input 
+                                 style={{
+                                      borderColor: errorMsg ? "red" : ""
+                                    }} 
+                                 
+                                 type="text" id="username" name="username" class="form-control" defaultValue={this.state.username} onChange={this.handleChangeUsername} placeholder="Your Username *" required autoFocus></input>
+                            </div>
+                            <div class="form-group">
+                                <input  
+                                    style={{
+                                      borderColor: errorMsg ? "red" : ""
+                                    }} 
+                                    type="password" id="password" name="password" class="form-control" defaultValue={this.state.password} onChange={this.handleChangePassword} placeholder="Your Password *" required></input>
+                            </div>
+                            <div class="form-group">
+                                <input class="btnSubmit" type="submit" value="Sign in" />
+                            </div>
+                            <div class="form-group">
+                                <Link to={'/register'} className="createAccount">
+                                  Don't have an account? create one now!
+                                </Link>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            </div>
-        )
+            )
+         
+
+       
     }
 }
 

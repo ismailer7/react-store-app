@@ -9,11 +9,12 @@ class ShopDetail extends Component {
     }
 
     componentDidMount() {
+        
         const placeId = this.props.match.params.placeId
         this.setState({
             isFetching: true
         })
-       fetch(`http://localhost:8080/place?placeID=${placeId}`)
+       fetch(`http://localhost:8090/place?placeId=${placeId}`)
        .then(response => response.json())
        .then(json => {
             console.log(json['result'])

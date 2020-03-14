@@ -88,9 +88,9 @@ class Register extends Component {
       }
 
     render() {
-        const username = 'drake'
-        const password = 'pass'
-        const encode = new Buffer(username + ':' + password).toString('base64');
+        // const username = 'drake'
+        // const password = 'pass'
+        // const encode = new Buffer(username + ':' + password).toString('base64');
         return (
             <div class="login-container">
                 {this.renderRedirectToHomePage()}

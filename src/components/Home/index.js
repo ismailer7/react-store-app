@@ -1,5 +1,8 @@
 import React, { Component } from "react";
+
+import Footer from '../Footer';
 import ShopList from '../../containers/ShopList';
+import Navigation from '../Navigation';
 
 class Home extends Component {
 
@@ -14,7 +17,8 @@ class Home extends Component {
                 <h1>
                    Near by Shop!
                 </h1>
-                <ShopList auth={this.props.location.credentials}/>  
+                <ShopList auth={this.props.location.credentials}/>
+                <Footer />
             </div>
         )
     }

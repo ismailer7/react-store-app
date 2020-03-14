@@ -6,7 +6,7 @@ class Footer extends Component {
         return (
             <div>
                 <footer id="sticky-footer" class="py-2 bg-light text-white-50">
-                    <div class="container text-center">
+                    <div className="container text-center">
                     <small>Copyright &copy; United Remote Challenge</small>
                     </div>
                 </footer>
