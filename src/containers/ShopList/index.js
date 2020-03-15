@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Loading from '../../components/Loading'
 import PropTypes from 'prop-types'
 import { withRouter } from "react-router";
+import Message from '../../components/Message';
 
 const SingleShop = (props) => (
     <Link to={`/shop/${props.shop.place_id}`}>
@@ -20,38 +21,15 @@ class ShopList extends Component {
         isAuthenticate: false,
         authorization: '',
         userId: 0,
-        latitude: 0,
-        longitude: 0
+        message: ''
     }
 
     static contextTypes = {
         router: PropTypes.object
     }
 
-    getUserLocation = () => {
-        if(navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    console.log("user position : " + position.coords.latitude + " and " + position.coords.longitude)
-                    const latitude = position.coords.latitude
-                    const longitude = position.coords.longitude
-                    const isFetching = true
-                    this.setState({
-                        latitude,
-                        longitude,
-                        isFetching
-                    })
-                }
-            )
-        }
-    }
-
     componentDidMount() {
-        this.getUserLocation()
-        //console.log('store list component : ', this.props)
-        /* this.setState({
-            isFetching: true
-        }) */
+        // this.getUserLocation()
         if(this.props.auth) { // comming from redirect
             localStorage.setItem('currentUser', this.props.auth.id)
             localStorage.setItem('authorization', this.props.auth.authorization)
@@ -77,10 +55,7 @@ class ShopList extends Component {
             })
             .catch(err => console.log(err))
         } else if(localStorage.getItem('currentUser')) { // already logged in..
-            // same requets getPlaces
-            console.log("request from local storage..")
             const userId = localStorage.getItem('currentUser')
-            console.log("user id from local storage", userId)
             this.setState({
                 isAuthenticate: true,
                 userId: userId
@@ -88,8 +63,6 @@ class ShopList extends Component {
             fetch(`http://localhost:8090/user/getPlaces?userId=${userId}`)
             .then(response => response.json())
             .then(json => {
-                console.log(json)
-                console.log(json['results'].length)
                 this.setState({
                     isFetching: false,
                     shops: json['results'],
@@ -97,24 +70,65 @@ class ShopList extends Component {
             })
             .catch(err => console.log(err))
         } else { // guest
-            fetch('http://localhost:8090/places')
-            .then(response => response.json())
-            .then(json => {
-                console.log(json)
-                console.log(json['results'].length)
-                this.setState({
-                    isFetching: false,
-                    shops: json['results'],
-                })
-            })
-            .catch(err => console.log(err))
+            if(navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const latitude = position.coords.latitude
+                        const longitude = position.coords.longitude
+                        this.setState({
+                            isFetching: true
+                        })
+                        fetch(`http://localhost:8090/places?latitude=${latitude}&longitude=${longitude}`)
+                        .then(response => response.json())
+                        .then(json => {
+                            this.setState({
+                                isFetching: false,
+                                shops: json['results'],
+                            })
+                        })
+                        .catch(err => console.log(err))
+                    }
+                )
+            }
         }
     }
 
-    /*
+    
     removeFromNearBy = (shopId) => {
-       console.log(shopId)
-    } */
+        this.setState({
+            isFetching: true
+        })
+        if(!localStorage.getItem('currentUser')) {
+            this.props.history.push('/login')
+       } else {
+            let obj = {
+                'userId': localStorage.getItem('currentUser'),
+                'storeId': shopId
+            }
+            fetch('http://localhost:8090/nearby/remove', { // this need to be authorized
+                method: 'POST',
+                headers: new Headers({
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('authorization')
+                }),
+                body: JSON.stringify(obj)
+            }).then(response => response.text())
+            .then(text => {
+                if(text === 'removed From Nearby') {
+                    console.log('current nearby list: ', this.state.shops)
+                    this.state.shops.forEach(nStore => {
+                        if(nStore['storeId'] === shopId) {
+                            this.state.shops.splice(this.state.shops.indexOf(nStore), 1)  
+                            this.setState({
+                                shops: this.state.shops,
+                                isFetching: false
+                            })
+                        }
+                    });
+                }
+            })
+       }
+    }
 
     addToPrefferedList = (shop) => {
         console.log('test')
@@ -149,13 +163,14 @@ class ShopList extends Component {
             body: JSON.stringify(obj)
         })
         .then(response => {
-                this.setState({
-                    isFetching: false
-                })
                 if(response.status !== 200) {
                     // unauthorized proceed to login page.
                     this.props.history.push('/login')
                 } else {
+                    this.setState({
+                        isFetching: false,
+                        message: 'Added To Preferred List Successfully!'
+                    })
                     return response.text()
                 }
             }
@@ -164,16 +179,24 @@ class ShopList extends Component {
         .catch(err => {
             console.log(err)
         })
-       /* if(!this.props.auth) {
-           this.props.history.push('/login')
-       } else {
-           console.log('proceeed to next page')
-       } */
+        this.setState({
+            message: ''
+        })
     }
 
     render() {
-        const {isFetching, shops} = this.state;
+        const {isFetching, shops, message} = this.state;
         return (
+            <div>
+
+            <div className="popup">
+                {
+                    message !== ''
+                    &&
+                    <Message msg={message}/>
+                }
+
+            </div>
             <div className="row">
                 {
                     isFetching
@@ -181,26 +204,32 @@ class ShopList extends Component {
                    <Loading />
                 }
 
+
                 {
                     !isFetching
                     &&
-                    <div>
+                    <div style={{padding: "50px"}}>
                         {
                             shops.map(
                                 shop => {
                                     return (
-                                        <div>
-                                            <SingleShop shop={shop} key={shop.place_id}/>
-                                            <button onClick={() => this.addToPrefferedList(shop)}>add</button><button onClick={() => this.removeFromNearBy(shop.id)}>remove</button>
-                                        </div>
+
+                                        <div class="card" style={{width: "18rem", padding: "10px"}}>
+                                            <div class="card-body">
+                                                <h5 class="card-title">{shop.name}</h5>
+                                                <SingleShop shop={shop} key={shop.place_id}/>
+                                                <button onClick={() => this.addToPrefferedList(shop)}>add</button><button onClick={() => this.removeFromNearBy(shop.storeId)}>remove</button>
+                                            </div>
+                                        </div>   
+                                     
                                     )
-                                    
                                 }
                             )
                         }
                     </div>
                     
                 }
+            </div>
             </div>
         )
     }

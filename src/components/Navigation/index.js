@@ -8,7 +8,6 @@ import Register from '../Register';
 import Preffered from '../Preffered';
 import ShopDetail from '../ShopDetail';
 import HomeLogo from './static/home_icon.png';
-import App from "../App/App";
 
 const MyRoutes = () => (
     <Switch>

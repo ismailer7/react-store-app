@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 import Footer from '../Footer';
 import ShopList from '../../containers/ShopList';
-import Navigation from '../Navigation';
+import Message from "../Message";
 
 class Home extends Component {
 
